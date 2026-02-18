@@ -1,54 +1,116 @@
-# Automated Weekly Marketing Report Builder (V1)
+# Automated Weekly Marketing Report Builder (V2)
 
 ## Overview
 
-Python automation project that loads marketing CSV exports, cleans them, aggregates totals, and saves a human-readable text report.
-The pipeline runs end-to-end, processing multiple CSV files automatically without needing manual calculations.
+Python automation project that loads marketing CSV exports, cleans and standardizes the data, aggregates total KPIs, and generates both:
 
-This project is a learning project to practice working with CSV files, cleaning data, aggregating numbers, and organizing a Python automation pipeline.
+* A simple human-readable **TXT report**
+* A structured, client-ready **PDF performance report**
+
+The pipeline runs end-to-end and processes multiple CSV files automatically — no manual Excel calculations required.
 
 
-## What this project does
+## What This Project Does
 
 * Loads all CSV exports from the input folder
-* Cleans and standardizes the data (column names, numeric values, dates, missing values)
-* Aggregates totals for all numeric columns
-* Builds a simple text report summarizing totals
-* Saves the report to the output folder
-* Works end-to-end as a **modular, easy-to-own pipeline**
+* Cleans and standardizes:
+
+  * Column names
+  * Numeric fields
+  * Date columns
+  * Missing values
+* Automatically detects reporting period:
+
+  * Start date (earliest date in data)
+  * End date (latest date in data)
+  * ISO week number
+* Aggregates totals for all numeric KPIs
+* Generates:
+
+  * Simple TXT summary report
+  * Professional PDF report with:
+
+    * Report title
+    * Week number
+    * Reporting period
+    * KPI summary table
+* Saves reports to the output folder
+* Works as a **modular, maintainable automation pipeline**
+
+
+## Example Output (PDF Report Includes)
+
+* Weekly Marketing Performance Report
+* Week number (auto-detected)
+* Reporting period (auto-calculated from CSV data)
+* Aggregated KPI table (Impressions, Clicks, Conversions, Revenue, etc.)
 
 
 ## Project Structure
 
-input/ — folder where raw CSV exports are placed
-output/ — folder where summary text reports are saved
+```
+input/                    # Raw CSV exports
+output/                   # Generated reports
 
-src/config.py — stores paths and settings
-src/loader.py — reads CSV files from input folder
-src/cleaner.py — cleans and standardizes the data
-src/aggregator.py — aggregates totals for numeric columns
-src/summary_report.py — builds and saves human-readable text report
-main.py — starts the pipeline program
+src/config.py             # Stores paths and settings
+src/loader.py             # Reads CSV files
+src/cleaner.py            # Cleans and standardizes data
+src/aggregator.py         # Aggregates numeric totals
+src/summary_report.py     # Generates TXT report
+src/pdf_report.py         # Generates formatted PDF report
+
+main.py                   # Runs the full pipeline
 ```
 
-## How to run the project
 
-1. Make sure Python is installed
-2. Place CSV files in `input/raw_exports/`
-3. Run the program:
+## How to Run
+
+1. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+(Or manually install `pandas` and `reportlab`)
+
+2. Place CSV files inside:
+
+```
+input/
+```
+
+3. Run:
 
 ```bash
 python main.py
 ```
 
-4. The pipeline will load, clean, aggregate, and save a text report to `output/weekly_report.txt`
+4. Reports will be saved inside:
+
+```
+output/
+```
+
+## Requirements
+
+* Python 3.10+
+* pandas
+* reportlab
 
 
 ## Notes
 
-* The text report shows **totals for all numeric metrics** in a readable format
-* This is **V1** — the first working version of the pipeline
-* CSV files must have at least one date column (`date`) and numeric metrics
+* CSV files must include at least:
+
+  * A date column (`date`)
+  * Numeric KPI columns
+* The reporting period is automatically calculated from the data
+* Supports multiple CSV files per run
+* Designed as a modular automation foundation for further enhancements (e.g., AI-generated executive summaries, workflow automation)
 
 
-**Last updated:** February 2026
+## Status
+
+Version 2 — Structured reporting with dynamic date intelligence and PDF generation.
+
+**Last Updated:** February 2026
