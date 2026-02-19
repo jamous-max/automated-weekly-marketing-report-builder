@@ -6,7 +6,6 @@ from reportlab.lib.units import inch
 
 def generate_pdf_report(totals_df, output_path, week_number, start_date, end_date):
 
-
     doc = SimpleDocTemplate(str(output_path))
     elements = []
 
@@ -17,34 +16,44 @@ def generate_pdf_report(totals_df, output_path, week_number, start_date, end_dat
     elements.append(title)
     elements.append(Spacer(1, 0.5 * inch))
 
-    # --- Date ----
+    # ---- Reporting Period ----
     period_info = Paragraph(
-    f"<b>Week {week_number}</b><br/>"
-    f"Reporting Period: {start_date} - {end_date}",
-    styles["Normal"]
-)
+        f"<b>Week {week_number}</b><br/>"
+        f"Reporting Period: {start_date} - {end_date}",
+        styles["Normal"]
+    )
 
     elements.append(period_info)
     elements.append(Spacer(1, 0.2 * inch))
 
-
-
     # ---- Description ----
     description = Paragraph(
-    "This report summarizes total marketing performance metrics "
-    "aggregated from all campaign data for the selected reporting period.",
-    styles["Normal"]
-)
+        "This report summarizes total marketing performance metrics "
+        "aggregated from all campaign data for the selected reporting period.",
+        styles["Normal"]
+    )
 
     elements.append(description)
     elements.append(Spacer(1, 0.2 * inch))
-
 
     # ---- Table Data ----
     table_data = [["Metric", "Value"]]
 
     for _, row in totals_df.iterrows():
-        table_data.append([row["metric"].capitalize(), f"{row['value']:,}"])
+        metric_name = row["metric"]
+        value = row["value"]
+
+        # Keep CTR uppercase, format others nicely
+        if metric_name.lower() != "ctr (%)":
+            metric_name = metric_name.title()
+
+        # Format values properly
+        if metric_name.lower() == "ctr (%)":
+            formatted_value = f"{value:.2f}%"
+        else:
+            formatted_value = f"{int(value):,}"
+
+        table_data.append([metric_name, formatted_value])
 
     table = Table(table_data, colWidths=[3 * inch, 2 * inch])
 

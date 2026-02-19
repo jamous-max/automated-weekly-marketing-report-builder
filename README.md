@@ -1,8 +1,8 @@
-# Automated Weekly Marketing Report Builder (V2)
+# Automated Weekly Marketing Report Builder (V2.1)
 
 ## Overview
 
-Python automation project that loads marketing CSV exports, cleans and standardizes the data, aggregates total KPIs, and generates both:
+Python automation project that loads marketing CSV exports, cleans and standardizes the data, aggregates total KPIs, calculates derived metrics, and generates both:
 
 * A simple human-readable **TXT report**
 * A structured, client-ready **PDF performance report**
@@ -25,6 +25,10 @@ The pipeline runs end-to-end and processes multiple CSV files automatically — 
   * End date (latest date in data)
   * ISO week number
 * Aggregates totals for all numeric KPIs
+* Calculates derived KPI:
+
+  * CTR (Click-Through Rate)
+* Applies consistent number formatting across TXT and PDF reports
 * Generates:
 
   * Simple TXT summary report
@@ -33,7 +37,7 @@ The pipeline runs end-to-end and processes multiple CSV files automatically — 
     * Report title
     * Week number
     * Reporting period
-    * KPI summary table
+    * KPI summary table (including CTR)
 * Saves reports to the output folder
 * Works as a **modular, maintainable automation pipeline**
 
@@ -43,7 +47,7 @@ The pipeline runs end-to-end and processes multiple CSV files automatically — 
 * Weekly Marketing Performance Report
 * Week number (auto-detected)
 * Reporting period (auto-calculated from CSV data)
-* Aggregated KPI table (Impressions, Clicks, Conversions, Revenue, etc.)
+* Aggregated KPI table (Impressions, Clicks, CTR (%), Conversions, Revenue, etc.)
 
 
 ## Project Structure
@@ -55,8 +59,8 @@ output/                   # Generated reports
 src/config.py             # Stores paths and settings
 src/loader.py             # Reads CSV files
 src/cleaner.py            # Cleans and standardizes data
-src/aggregator.py         # Aggregates numeric totals
-src/summary_report.py     # Generates TXT report
+src/aggregator.py         # Aggregates numeric totals and calculates CTR
+src/summary_report.py     # Generates formatted TXT report
 src/pdf_report.py         # Generates formatted PDF report
 
 main.py                   # Runs the full pipeline
@@ -91,9 +95,10 @@ python main.py
 output/
 ```
 
+
 ## Requirements
 
-* Python 3.10+
+* Python 3.12 (recommended)
 * pandas
 * reportlab
 
@@ -106,11 +111,12 @@ output/
   * Numeric KPI columns
 * The reporting period is automatically calculated from the data
 * Supports multiple CSV files per run
+* Includes derived KPI calculation (CTR)
 * Designed as a modular automation foundation for further enhancements (e.g., AI-generated executive summaries, workflow automation)
 
 
 ## Status
 
-Version 2 — Structured reporting with dynamic date intelligence and PDF generation.
+Version 2.1 — Structured reporting with dynamic date intelligence, CTR calculation, and improved report formatting.
 
 **Last Updated:** February 2026
