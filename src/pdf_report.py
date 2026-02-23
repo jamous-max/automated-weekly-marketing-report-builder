@@ -4,7 +4,14 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 
 
-def generate_pdf_report(totals_df, output_path, week_number, start_date, end_date):
+def generate_pdf_report(
+    totals_df,
+    output_path,
+    week_number,
+    start_date,
+    end_date,
+    executive_summary
+):
 
     doc = SimpleDocTemplate(str(output_path))
     elements = []
@@ -22,30 +29,28 @@ def generate_pdf_report(totals_df, output_path, week_number, start_date, end_dat
         f"Reporting Period: {start_date} - {end_date}",
         styles["Normal"]
     )
-
     elements.append(period_info)
+    elements.append(Spacer(1, 0.3 * inch))
+
+    # ---- Executive Overview ----
+    executive_title = Paragraph("<b>Executive Overview</b>", styles["Heading2"])
+    elements.append(executive_title)
     elements.append(Spacer(1, 0.2 * inch))
 
-    # ---- Description ----
-    description = Paragraph(
-        "This report summarizes total marketing performance metrics "
-        "aggregated from all campaign data for the selected reporting period.",
-        styles["Normal"]
-    )
+    executive_paragraph = Paragraph(executive_summary, styles["Normal"])
+    elements.append(executive_paragraph)
+    elements.append(Spacer(1, 0.4 * inch))
 
-    elements.append(description)
-    elements.append(Spacer(1, 0.2 * inch))
-
-    # ---- Table Data ----
+    # ---- Performance Table ----
     table_data = [["Metric", "Value"]]
 
     for _, row in totals_df.iterrows():
         metric_name = row["metric"]
         value = row["value"]
 
-        # Keep CTR uppercase, format others nicely
+        # Keep CTR uppercase
         if metric_name.lower() != "ctr (%)":
-            metric_name = metric_name.title()
+            metric_name = metric_name.replace("_", " ").title()
 
         # Format values properly
         if metric_name.lower() == "ctr (%)":

@@ -1,21 +1,36 @@
-def save_summary_report(totals_df, output_path):
+def save_summary_report(
+    executive_summary,
+    totals_df,
+    output_path,
+    week_number,
+    start_date,
+    end_date
+):
     """
-    Prepare a human-readable text summary and save it to a file.
+    Generate executive-style text summary and save to file.
     """
-    if totals_df.empty:
-        report_text = "No data available."
-    else:
-        lines = ["Summary Marketing Report — Totals\n"]
 
+    lines = [
+        f"Summary Marketing Report — Week {week_number}",
+        f"Reporting Period: {start_date} – {end_date}",
+        "",
+        "Executive Overview:",
+        executive_summary,
+        "",
+        "Performance Breakdown:",
+        ""
+    ]
+
+    if totals_df.empty:
+        lines.append("No data available.")
+    else:
         for _, row in totals_df.iterrows():
             metric_name = row["metric"]
             value = row["value"]
 
-            # Keep CTR fully uppercase
             if metric_name.lower() != "ctr (%)":
                 metric_name = metric_name.replace("_", " ").title()
 
-            # Format values properly
             if metric_name.lower() == "ctr (%)":
                 formatted_value = f"{value:.2f}%"
             else:
@@ -23,7 +38,7 @@ def save_summary_report(totals_df, output_path):
 
             lines.append(f"{metric_name}: {formatted_value}")
 
-        report_text = "\n".join(lines)
+    report_text = "\n".join(lines)
 
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(report_text)

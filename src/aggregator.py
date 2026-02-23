@@ -13,7 +13,7 @@ def aggregate_data(dataframes: list[pd.DataFrame]) -> pd.DataFrame:
     combined_df = pd.concat(dataframes, ignore_index=True)
 
     # 2. Select numeric columns only
-    numeric_columns = combined_df.select_dtypes(include="number")
+    numeric_columns = combined_df.select_dtypes(include="number").drop(columns=["week_number"], errors="ignore")
 
     # 3. Sum numeric values
     totals = numeric_columns.sum().to_frame(name="value").reset_index()
