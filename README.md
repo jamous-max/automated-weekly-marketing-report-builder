@@ -51,42 +51,37 @@ Each PDF report includes:
 
 ## Project Structure
 
-input/                    # Raw marketing CSV export  
-output/                   # Generated reports + history.csv  
+input/                      # Raw marketing CSV export
+output/                     # Generated reports + history.csv
 
-src/config.py             # Stores paths and settings  
-src/loader.py             # Reads CSV files  
-src/cleaner.py            # Cleans and standardizes data  
-src/aggregator.py         # Aggregates numeric totals and calculates CTR  
-src/comparison.py         # Week-over-week comparison logic  
-src/history_logger.py     # Tracks processed weeks  
-src/ai_payload.py         # Builds structured KPI payload  
-src/ai_summary.py         # Generates executive summary text  
-src/summary_report.py     # Generates formatted TXT report  
-src/pdf_report.py         # Generates formatted PDF report  
+src/
+│── config.py               # Stores paths and settings
+│── loader.py               # Reads CSV files
+│── cleaner.py              # Cleans and standardizes data
+│── aggregator.py           # Aggregates numeric totals and calculates CTR
+│── comparison.py           # Week-over-week comparison logic
+│── history_logger.py       # Tracks processed weeks
+│── ai_payload.py           # Builds structured KPI payload
+│── ai_summary.py           # Generates executive summary text
+│── summary_report.py       # Generates formatted TXT report
+│── pdf_report.py           # Generates formatted PDF report
 
-main.py                   # Runs the full reporting pipeline  
-
+main.py                     # Runs the full reporting pipeline
 ---
 
 ## How to Run
 
 1. Install dependencies:
-
 pip install -r requirements.txt
-
-(Or manually install `pandas` and `reportlab`)
+(Or manually install pandas and reportlab.)
 
 2. Place a CSV file inside:
-
 input/
 
 3. Run:
-
 python main.py
 
 Reports and history will be saved inside:
-
 output/
 
 ---
