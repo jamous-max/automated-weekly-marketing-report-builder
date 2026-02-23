@@ -9,7 +9,7 @@ Python automation project that loads marketing CSV exports, cleans and standardi
 
 The pipeline runs end-to-end and processes multiple weeks from a single CSV file automatically — no manual Excel calculations required.
 
----
+
 
 ## What This Project Does
 
@@ -30,7 +30,7 @@ The pipeline runs end-to-end and processes multiple weeks from a single CSV file
 - Applies consistent number formatting across TXT and PDF reports
 - Maintains a `history.csv` file to prevent duplicate processing
 
----
+
 
 ## Weekly Report Includes
 
@@ -47,27 +47,29 @@ Each PDF report includes:
 - Executive overview paragraph
 - Aggregated KPI table (Impressions, Clicks, CTR (%), Conversions, Revenue)
 
----
+
 
 ## Project Structure
 
+```
 input/                      # Raw marketing CSV export
 output/                     # Generated reports + history.csv
 
 src/
-│── config.py               # Stores paths and settings
-│── loader.py               # Reads CSV files
-│── cleaner.py              # Cleans and standardizes data
-│── aggregator.py           # Aggregates numeric totals and calculates CTR
-│── comparison.py           # Week-over-week comparison logic
-│── history_logger.py       # Tracks processed weeks
-│── ai_payload.py           # Builds structured KPI payload
-│── ai_summary.py           # Generates executive summary text
-│── summary_report.py       # Generates formatted TXT report
-│── pdf_report.py           # Generates formatted PDF report
+├── config.py               # Stores paths and settings
+├── loader.py               # Reads CSV files
+├── cleaner.py              # Cleans and standardizes data
+├── aggregator.py           # Aggregates numeric totals and calculates CTR
+├── comparison.py           # Week-over-week comparison logic
+├── history_logger.py       # Tracks processed weeks
+├── ai_payload.py           # Builds structured KPI payload
+├── ai_summary.py           # Generates executive summary text
+├── summary_report.py       # Generates formatted TXT report
+├── pdf_report.py           # Generates formatted PDF report
 
 main.py                     # Runs the full reporting pipeline
----
+```
+
 
 ## How to Run
 
@@ -84,7 +86,7 @@ python main.py
 Reports and history will be saved inside:
 output/
 
----
+
 
 ## Requirements
 
@@ -92,7 +94,7 @@ output/
 - pandas
 - reportlab
 
----
+
 
 ## Notes
 
@@ -111,7 +113,7 @@ Features:
 - Structured executive summary generation
 - Modular project structure for future enhancements
 
----
+
 
 ## Status
 
