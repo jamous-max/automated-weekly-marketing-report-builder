@@ -1,122 +1,125 @@
-# Automated Weekly Marketing Report Builder (V2.1)
+# Automated Weekly Marketing Report Builder (V2.2)
 
 ## Overview
 
-Python automation project that loads marketing CSV exports, cleans and standardizes the data, aggregates total KPIs, calculates derived metrics, and generates both:
+Python automation project that loads marketing CSV exports, cleans and standardizes the data, detects ISO weeks automatically, aggregates weekly KPIs, and generates both:
 
-* A simple human-readable **TXT report**
-* A structured, client-ready **PDF performance report**
+- A structured, human-readable TXT report
+- A formatted PDF performance report
 
-The pipeline runs end-to-end and processes multiple CSV files automatically — no manual Excel calculations required.
+The pipeline runs end-to-end and processes multiple weeks from a single CSV file automatically — no manual Excel calculations required.
 
+---
 
 ## What This Project Does
 
-* Loads all CSV exports from the input folder
-* Cleans and standardizes:
+- Loads marketing performance CSV from the `input/` folder
+- Cleans and standardizes:
+  - Column names
+  - Numeric fields
+  - Date columns
+  - Missing values
+- Detects ISO weeks inside the dataset
+- Processes each week separately
+- Skips weeks that were already processed (using a history file)
+- Aggregates totals for numeric KPIs per week
+- Calculates derived KPI:
+  - CTR (Click-Through Rate)
+- Performs week-over-week comparison
+- Generates a structured executive-style summary
+- Applies consistent number formatting across TXT and PDF reports
+- Maintains a `history.csv` file to prevent duplicate processing
 
-  * Column names
-  * Numeric fields
-  * Date columns
-  * Missing values
-* Automatically detects reporting period:
+---
 
-  * Start date (earliest date in data)
-  * End date (latest date in data)
-  * ISO week number
-* Aggregates totals for all numeric KPIs
-* Calculates derived KPI:
+## Weekly Report Includes
 
-  * CTR (Click-Through Rate)
-* Applies consistent number formatting across TXT and PDF reports
-* Generates:
+For each detected ISO week, the system generates:
 
-  * Simple TXT summary report
-  * Professional PDF report with:
+- `summary_week_X.txt`
+- `summary_week_X.pdf`
 
-    * Report title
-    * Week number
-    * Reporting period
-    * KPI summary table (including CTR)
-* Saves reports to the output folder
-* Works as a **modular, maintainable automation pipeline**
+Each PDF report includes:
 
+- Report title
+- Week number
+- Reporting period
+- Executive overview paragraph
+- Aggregated KPI table (Impressions, Clicks, CTR (%), Conversions, Revenue)
 
-## Example Output (PDF Report Includes)
-
-* Weekly Marketing Performance Report
-* Week number (auto-detected)
-* Reporting period (auto-calculated from CSV data)
-* Aggregated KPI table (Impressions, Clicks, CTR (%), Conversions, Revenue, etc.)
-
+---
 
 ## Project Structure
 
-```
-input/                    # Raw CSV exports
-output/                   # Generated reports
+input/                    # Raw marketing CSV export  
+output/                   # Generated reports + history.csv  
 
-src/config.py             # Stores paths and settings
-src/loader.py             # Reads CSV files
-src/cleaner.py            # Cleans and standardizes data
-src/aggregator.py         # Aggregates numeric totals and calculates CTR
-src/summary_report.py     # Generates formatted TXT report
-src/pdf_report.py         # Generates formatted PDF report
+src/config.py             # Stores paths and settings  
+src/loader.py             # Reads CSV files  
+src/cleaner.py            # Cleans and standardizes data  
+src/aggregator.py         # Aggregates numeric totals and calculates CTR  
+src/comparison.py         # Week-over-week comparison logic  
+src/history_logger.py     # Tracks processed weeks  
+src/ai_payload.py         # Builds structured KPI payload  
+src/ai_summary.py         # Generates executive summary text  
+src/summary_report.py     # Generates formatted TXT report  
+src/pdf_report.py         # Generates formatted PDF report  
 
-main.py                   # Runs the full pipeline
-```
+main.py                   # Runs the full reporting pipeline  
 
+---
 
 ## How to Run
 
 1. Install dependencies:
 
-```bash
 pip install -r requirements.txt
-```
 
 (Or manually install `pandas` and `reportlab`)
 
-2. Place CSV files inside:
+2. Place a CSV file inside:
 
-```
 input/
-```
 
 3. Run:
 
-```bash
 python main.py
-```
 
-4. Reports will be saved inside:
+Reports and history will be saved inside:
 
-```
 output/
-```
 
+---
 
 ## Requirements
 
-* Python 3.12 (recommended)
-* pandas
-* reportlab
+- Python 3.12 (recommended)
+- pandas
+- reportlab
 
+---
 
 ## Notes
 
-* CSV files must include at least:
+CSV file must include:
 
-  * A date column (`date`)
-  * Numeric KPI columns
-* The reporting period is automatically calculated from the data
-* Supports multiple CSV files per run
-* Includes derived KPI calculation (CTR)
-* Designed as a modular automation foundation for further enhancements (e.g., AI-generated executive summaries, workflow automation)
+- A `date` column
+- Numeric KPI columns (Impressions, Clicks, Conversions, Revenue)
 
+Features:
+
+- Automatic ISO week detection
+- Multi-week processing from a single CSV
+- Incremental history tracking
+- Duplicate prevention
+- Derived KPI calculation (CTR)
+- Structured executive summary generation
+- Modular project structure for future enhancements
+
+---
 
 ## Status
 
-Version 2.1 — Structured reporting with dynamic date intelligence, CTR calculation, and improved report formatting.
+Version 2.2 — Multi-week processing with week-over-week comparison and structured reporting.
 
-**Last Updated:** February 2026
+Last Updated: February 2026
