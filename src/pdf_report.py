@@ -5,12 +5,7 @@ from reportlab.lib.units import inch
 
 
 def generate_pdf_report(
-    totals_df,
-    output_path,
-    week_number,
-    start_date,
-    end_date,
-    executive_summary
+    totals_df, output_path, week_number, start_date, end_date, executive_summary
 ):
 
     doc = SimpleDocTemplate(str(output_path))
@@ -27,7 +22,7 @@ def generate_pdf_report(
     period_info = Paragraph(
         f"<b>Week {week_number}</b><br/>"
         f"Reporting Period: {start_date} - {end_date}",
-        styles["Normal"]
+        styles["Normal"],
     )
     elements.append(period_info)
     elements.append(Spacer(1, 0.3 * inch))
@@ -37,8 +32,29 @@ def generate_pdf_report(
     elements.append(executive_title)
     elements.append(Spacer(1, 0.2 * inch))
 
-    executive_paragraph = Paragraph(executive_summary, styles["Normal"])
-    elements.append(executive_paragraph)
+    # ---- Structured Executive Summary Rendering ----
+    summary_lines = executive_summary.split("\n")
+
+    for line in summary_lines:
+
+        if not line.strip():
+            elements.append(Spacer(1, 0.2 * inch))
+            continue
+
+        # Bold section headers
+        if (
+            line.startswith("Week Type:")
+            or line.startswith("Risk Level:")
+            or line.startswith("Performance Insight:")
+            or line.startswith("Primary Driver:")
+            or line.startswith("Priority Focus:")
+        ):
+            elements.append(Paragraph(f"<b>{line}</b>", styles["Normal"]))
+        else:
+            elements.append(Paragraph(line, styles["Normal"]))
+
+        elements.append(Spacer(1, 0.15 * inch))
+
     elements.append(Spacer(1, 0.4 * inch))
 
     # ---- Performance Table ----
@@ -48,11 +64,9 @@ def generate_pdf_report(
         metric_name = row["metric"]
         value = row["value"]
 
-        # Keep CTR uppercase
         if metric_name.lower() != "ctr (%)":
             metric_name = metric_name.replace("_", " ").title()
 
-        # Format values properly
         if metric_name.lower() == "ctr (%)":
             formatted_value = f"{value:.2f}%"
         else:
@@ -62,15 +76,19 @@ def generate_pdf_report(
 
     table = Table(table_data, colWidths=[3 * inch, 2 * inch])
 
-    table.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, 0), colors.grey),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
-        ("GRID", (0, 0), (-1, -1), 1, colors.black),
-        ("ALIGN", (1, 1), (-1, -1), "RIGHT"),
-        ("FONTNAME", (0, 0), (-1, -1), "Helvetica"),
-        ("FONTSIZE", (0, 0), (-1, -1), 11),
-        ("BOTTOMPADDING", (0, 0), (-1, 0), 12),
-    ]))
+    table.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, 0), colors.grey),
+                ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
+                ("GRID", (0, 0), (-1, -1), 1, colors.black),
+                ("ALIGN", (1, 1), (-1, -1), "RIGHT"),
+                ("FONTNAME", (0, 0), (-1, -1), "Helvetica"),
+                ("FONTSIZE", (0, 0), (-1, -1), 11),
+                ("BOTTOMPADDING", (0, 0), (-1, 0), 12),
+            ]
+        )
+    )
 
     elements.append(table)
 

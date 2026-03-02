@@ -7,9 +7,12 @@ from src.aggregator import aggregate_data
 from src.pdf_report import generate_pdf_report
 from src.summary_report import save_summary_report
 from src.ai_payload import build_ai_payload
-from src.ai_summary import generate_executive_summary
+from src.ai_summary import generate_ai_executive_summary
 from src.history_logger import log_week_history
 from src.comparison import compare_with_previous_week
+
+
+USE_AI = True  # Global toggle (AI OFF by default)
 
 
 def main():
@@ -28,7 +31,6 @@ def main():
     iso_calendar = df["date"].dt.isocalendar()
     df["week_number"] = iso_calendar.week.astype(int)
 
-    
     # 3️ Detect unique weeks
     unique_weeks = sorted(df["week_number"].unique())
 
@@ -60,23 +62,24 @@ def main():
         start_date_str = start_date.strftime("%b %d, %Y")
         end_date_str = end_date.strftime("%b %d, %Y")
 
-        
         # Build payload
         payload = build_ai_payload(
             totals_df,
             week,
             start_date,
-            end_date
+            end_date,
         )
 
-        
         # Compare BEFORE logging
         comparison = compare_with_previous_week(payload)
 
-        # Generate executive summary
-        executive_summary = generate_executive_summary(payload, comparison)
+        # -------- Executive Summary Generation --------
+        if USE_AI:
+            executive_summary = generate_ai_executive_summary(payload, comparison)
+        else:
+            executive_summary = generate_executive_summary(payload, comparison)
 
-        # File paths
+        # -------- File paths --------
         txt_path = OUTPUT_FOLDER / f"summary_week_{week}.txt"
         pdf_path = OUTPUT_FOLDER / f"summary_week_{week}.pdf"
 
@@ -87,7 +90,7 @@ def main():
             txt_path,
             week,
             start_date_str,
-            end_date_str
+            end_date_str,
         )
 
         # Save PDF
@@ -97,7 +100,7 @@ def main():
             week_number=week,
             start_date=start_date_str,
             end_date=end_date_str,
-            executive_summary=executive_summary
+            executive_summary=executive_summary,
         )
 
         # Log history LAST

@@ -1,57 +1,102 @@
-def generate_executive_summary(payload: dict, comparison: dict) -> str:
+from openai import OpenAI
+from src.comparison import (
+    build_delta_summary,
+    classify_risk,
+    classify_week_type,
+)
+
+client = OpenAI()
+
+
+def generate_ai_executive_summary(payload: dict, comparison: dict) -> str:
     """
-    Generate executive summary text using KPI payload
-    and week-over-week comparison data.
+    Generate structured executive summary using OpenAI (V3).
+    Deterministic classification + structured AI interpretation.
     """
 
-    week = payload["week_number"]
-    start = payload["report_start"]
-    end = payload["report_end"]
-
-    impressions = payload["impressions"]
-    clicks = payload["clicks"]
-    conversions = payload["conversions"]
-    revenue = payload["revenue"]
-
-    # ---- First week case (no comparison available) ----
+    # ---- Baseline Case (First Week) ----
     if not comparison.get("has_previous"):
         return (
-            f"Week {week} ({start} to {end}) delivered "
-            f"{impressions:,} impressions, {clicks:,} clicks, "
-            f"and {conversions:,} conversions, generating revenue of {revenue:,}. "
-            "As this is the first recorded reporting period, "
-            "no historical comparison is available. "
-            "This baseline will serve as a reference for future performance evaluation."
+            "Week Type: Baseline\n"
+            "Risk Level: Low\n\n"
+            "Performance Insight:\n"
+            "This is the first recorded reporting period. "
+            "It establishes a baseline for future comparison.\n\n"
+            "Primary Driver:\n"
+            "No historical benchmark available.\n\n"
+            "Priority Focus:\n"
+            "Monitor performance trends in the coming weeks."
         )
 
-    # ---- Comparison case ----
+    # ---- Deterministic Layer ----
+    delta_summary = build_delta_summary(comparison)
+
     revenue_change = comparison.get("revenue_change_pct")
-    conversions_change = comparison.get("conversions_change_pct")
-    ctr_change = comparison.get("ctr_change_pct")
+    risk_level = classify_risk(revenue_change)
 
-    previous_week = comparison.get("previous_week_number")
+    week_type = classify_week_type(comparison)
 
-    def direction_text(value):
-        if value is None:
-            return "remained stable"
-        elif value > 0:
-            return f"increased by {abs(value):.1f}%"
-        elif value < 0:
-            return f"decreased by {abs(value):.1f}%"
-        else:
-            return "remained stable"
+    # ---- Structured Prompt (V3) ----
+    # ---- Tone Adjustment Based on Risk ----
+    if risk_level == "High":
+        tone_instruction = (
+            "Use firm and decisive tone."
+            "Clearly state the material impact of the decline."
+            "Emphasize immediate corrective action."
+            "Avoid dramatic or emotional language. "
+        )
+    else:
+        tone_instruction = (
+            "Maintain calm and strategic tone. " "Focus on clarity and prioritization."
+        )
 
-    revenue_direction = direction_text(revenue_change)
-    conversions_direction = direction_text(conversions_change)
-    ctr_direction = direction_text(ctr_change)
+    # ---- Structured Prompt (V3.1 with Tone Control) ----
+    prompt = f"""
+ROLE:
+You are a senior growth strategist writing for a busy marketing manager.
 
-    summary = (
-        f"Week {week} ({start} to {end}) generated {impressions:,} impressions "
-        f"and {clicks:,} clicks, resulting in {conversions:,} conversions "
-        f"and revenue of {revenue:,}. "
-        f"Compared to Week {previous_week}, revenue {revenue_direction}, "
-        f"conversions {conversions_direction}, and click-through rate {ctr_direction}. "
-        "Overall, performance reflects current momentum relative to the prior reporting period."
+INPUT:
+Week Type: {week_type}
+Risk Level: {risk_level}
+Performance Summary:
+{delta_summary}
+
+TASK:
+Explain the performance clearly and concisely.
+Identify the main driver.
+State what requires attention.
+Recommend one clear focus.
+
+TONE:
+{tone_instruction}
+
+OUTPUT FORMAT:
+
+Week Type: {week_type}
+Risk Level: {risk_level}
+
+Performance Insight:
+(1–2 short sentences explaining what changed and why it matters.)
+
+Primary Driver:
+(1 short sentence.)
+
+Priority Focus:
+(1 clear action direction.)
+
+RULES:
+- Use simple, direct English.
+- Short sentences.
+- No jargon.
+- No hedging words.
+- Do NOT repeat raw numbers.
+- Max 120 tokens.
+"""
+
+    response = client.responses.create(
+        model="gpt-4.1-mini",
+        input=prompt,
+        max_output_tokens=130,
     )
 
-    return summary
+    return response.output_text.strip()

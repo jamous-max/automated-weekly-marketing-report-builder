@@ -1,15 +1,18 @@
-# Automated Weekly Marketing Report Builder (V2.2)
+# Automated Weekly Marketing Report Builder (V3.1)
 
 ## Overview
 
-Python automation project that loads marketing CSV exports, cleans and standardizes the data, detects ISO weeks automatically, aggregates weekly KPIs, and generates both:
+A modular Python automation system that processes marketing CSV exports, detects ISO weeks automatically, aggregates weekly KPIs, performs structured week-over-week analysis, and generates:
 
-- A structured, human-readable TXT report
-- A formatted PDF performance report
+- A formatted TXT executive report
+- A structured PDF performance report
+- An AI-powered strategic executive summary
 
-The pipeline runs end-to-end and processes multiple weeks from a single CSV file automatically — no manual Excel calculations required.
+Version 3.1 introduces deterministic classification, revenue-based risk tagging, structured AI output, and risk-sensitive tone control.
 
+This project demonstrates production-oriented AI integration with controlled architecture and cost governance.
 
+---
 
 ## What This Project Does
 
@@ -19,18 +22,30 @@ The pipeline runs end-to-end and processes multiple weeks from a single CSV file
   - Numeric fields
   - Date columns
   - Missing values
-- Detects ISO weeks inside the dataset
-- Processes each week separately
-- Skips weeks that were already processed (using a history file)
-- Aggregates totals for numeric KPIs per week
+- Detects ISO weeks automatically
+- Processes each week independently
+- Skips weeks already processed (via history tracking)
+- Aggregates weekly KPI totals
 - Calculates derived KPI:
   - CTR (Click-Through Rate)
 - Performs week-over-week comparison
-- Generates a structured executive-style summary
-- Applies consistent number formatting across TXT and PDF reports
-- Maintains a `history.csv` file to prevent duplicate processing
+- Classifies each week into:
+  - Baseline
+  - Growth
+  - Performance Drop
+  - Efficiency Drop
+  - Mixed Signal
+  - Stable
+- Assigns risk level:
+  - High
+  - Medium
+  - Low
+- Generates structured AI executive summary
+- Applies risk-sensitive tone modulation
+- Generates formatted TXT and PDF reports
+- Maintains `history.csv` to prevent duplicate processing
 
-
+---
 
 ## Weekly Report Includes
 
@@ -44,10 +59,39 @@ Each PDF report includes:
 - Report title
 - Week number
 - Reporting period
-- Executive overview paragraph
-- Aggregated KPI table (Impressions, Clicks, CTR (%), Conversions, Revenue)
+- Executive overview (AI-generated, structured)
+- Week type classification
+- Risk level tagging
+- Aggregated KPI table:
+  - Impressions
+  - Clicks
+  - CTR (%)
+  - Conversions
+  - Revenue
 
+---
 
+## AI Executive Summary (V3.1)
+
+The AI summary is:
+
+- Structured into defined sections
+- Constrained by token limits
+- Based on delta signal (not raw metrics)
+- Deterministically classified before interpretation
+- Risk-aware (tone adapts to High risk weeks)
+- Designed for executive readability (short, direct sentences)
+
+Architecture separation:
+
+- Data Layer
+- Comparison Layer
+- Classification Layer
+- AI Interpretation Layer
+
+Ensuring stability, consistency, and cost control.
+
+---
 
 ## Project Structure
 
@@ -56,67 +100,89 @@ input/                      # Raw marketing CSV export
 output/                     # Generated reports + history.csv
 
 src/
-├── config.py               # Stores paths and settings
+├── config.py               # Paths and risk thresholds
 ├── loader.py               # Reads CSV files
 ├── cleaner.py              # Cleans and standardizes data
-├── aggregator.py           # Aggregates numeric totals and calculates CTR
-├── comparison.py           # Week-over-week comparison logic
+├── aggregator.py           # Aggregates numeric totals + CTR
+├── comparison.py           # Week-over-week comparison + classification
 ├── history_logger.py       # Tracks processed weeks
 ├── ai_payload.py           # Builds structured KPI payload
-├── ai_summary.py           # Generates executive summary text
+├── ai_summary.py           # AI structured executive summary (V3.1)
 ├── summary_report.py       # Generates formatted TXT report
 ├── pdf_report.py           # Generates formatted PDF report
 
-main.py                     # Runs the full reporting pipeline
+main.py                     # Runs full reporting pipeline
 ```
 
+---
 
 ## How to Run
 
-1. Install dependencies:
+### 1. Install dependencies
+
+```bash
 pip install -r requirements.txt
-(Or manually install pandas and reportlab.)
+```
 
-2. Place a CSV file inside:
+### 2. Set your OpenAI API key as an environment variable
+
+**Mac/Linux**
+
+```bash
+export OPENAI_API_KEY="your_key_here"
+```
+
+**Windows**
+
+```bash
+setx OPENAI_API_KEY "your_key_here"
+```
+
+### 3. Place CSV file inside
+
+```
 input/
+```
 
-3. Run:
+### 4. Run
+
+```bash
 python main.py
+```
 
-Reports and history will be saved inside:
+Reports will be saved in:
+
+```
 output/
+```
 
-
+---
 
 ## Requirements
 
 - Python 3.12 (recommended)
 - pandas
 - reportlab
+- openai
 
+---
 
+## Future Improvements (Roadmap)
 
-## Notes
+- Add CPA (Cost per Acquisition)
+- Add ROAS calculation
+- Add AOV tracking
+- Add weighted risk scoring
+- Add 4-week trend comparison
+- Add token usage logging
+- Add automation layer (n8n integration)
+- Add dashboard interface
+- Add error logging system
 
-CSV file must include:
-
-- A `date` column
-- Numeric KPI columns (Impressions, Clicks, Conversions, Revenue)
-
-Features:
-
-- Automatic ISO week detection
-- Multi-week processing from a single CSV
-- Incremental history tracking
-- Duplicate prevention
-- Derived KPI calculation (CTR)
-- Structured executive summary generation
-- Modular project structure for future enhancements
-
-
+---
 
 ## Status
 
-Version 2.2 — Multi-week processing with week-over-week comparison and structured reporting.
+**Version 3.1** — Structured AI reporting engine with deterministic classification and risk-aware tone control.
 
-Last Updated: February 2026
+_Last Updated: March 2026_
