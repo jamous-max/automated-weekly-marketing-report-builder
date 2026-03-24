@@ -73,6 +73,22 @@ Each PDF report includes:
 
 ---
 
+## Output Preview
+
+### Automated Email Delivery
+
+![Automated Email Delivery](docs/email_delivery.png)
+
+### Generated Reports (ZIP Output)
+
+![ZIP Reports Output](docs/zip_reports.png)
+
+### FastAPI Endpoints
+
+![FastAPI Endpoints](docs/fastapi_docs.png)
+
+---
+
 ## AI Executive Summary (V3.1)
 
 The executive summary layer is designed to produce short, structured, decision-friendly summaries based on weekly performance changes.
